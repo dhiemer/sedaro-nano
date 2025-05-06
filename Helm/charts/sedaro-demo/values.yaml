@@ -62,32 +62,15 @@ app:
 
 
 
-      
-kube-prometheus-stack:
-  grafana:
-    enabled: true
+prometheus:
+  server:
     service:
-      type: NodePort
-      nodePort: 30082
+      type: ClusterIP
 
-
-
-  prometheus:
-    prometheusSpec:
-      serviceMonitorSelectorNilUsesHelmValues: false
-
-  alertmanager:
-    enabled: false
-
-  defaultRules:
-    create: true
-
-  kube-state-metrics:
-    enabled: true
-
-  nodeExporter:
-    enabled: true
-
-
-crds:
-  enabled: true
+grafana:
+  adminPassword: admin
+  service:
+    type: NodePort
+    nodePort: 30000
+  ingress:
+    enabled: false  # You can enable and configure ALB later if needed
