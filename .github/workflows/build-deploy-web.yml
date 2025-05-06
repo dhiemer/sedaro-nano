@@ -91,13 +91,11 @@ jobs:
 
       - name: Install kube-prometheus-stack CRDs
         run: |
-          curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagers.yaml | yq 'del(.metadata.annotations)' | kubectl apply -f -
-          curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml | yq 'del(.metadata.annotations)' | kubectl apply -f -
-          curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_probes.yaml | yq 'del(.metadata.annotations)' | kubectl apply -f -
-          curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheuses.yaml | yq 'del(.metadata.annotations)' | kubectl apply -f -
-          curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml | yq 'del(.metadata.annotations)' | kubectl apply -f -
-          curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml | yq 'del(.metadata.annotations)' | kubectl apply -f -
-          curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_thanosrulers.yaml | yq 'del(.metadata.annotations)' | kubectl apply -f -
+          for crd in alertmanagers podmonitors probes prometheuses prometheusrules servicemonitors thanosrulers; do
+            curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_${crd}.yaml \
+            | yq eval 'del(.metadata.annotations)' - \
+            | kubectl apply -f -
+          done
 
       - name: Deploy Helm chart
         run: |
