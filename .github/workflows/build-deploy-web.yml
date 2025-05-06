@@ -24,41 +24,41 @@ jobs:
 # 
 ########################################################
 
-#  build-web:
-#    runs-on: ubuntu-latest
-#    permissions: { id-token: write, contents: read }
-#    steps:
-#      - uses: actions/checkout@v3
-#      - uses: aws-actions/configure-aws-credentials@v4
-#        with:
-#          role-to-assume: ${{ env.ROLE_TO_ASSUME }}
-#          aws-region: ${{ env.AWS_REGION }}
-#          audience: sts.amazonaws.com
-#      - uses: docker/setup-buildx-action@v3
-#      - uses: aws-actions/amazon-ecr-login@v2
-#        id: login-ecr
-#      - name: Build/Push [web] image
-#        run: |
-#          docker build -t $ECR_REPO/sedaro-web:$IMAGE_TAG ./sedaro-nano/web
-#          docker push $ECR_REPO/sedaro-web:$IMAGE_TAG
-#
-#  build-app:
-#    runs-on: ubuntu-latest
-#    permissions: { id-token: write, contents: read }
-#    steps:
-#      - uses: actions/checkout@v3
-#      - uses: aws-actions/configure-aws-credentials@v4
-#        with:
-#          role-to-assume: ${{ env.ROLE_TO_ASSUME }}
-#          aws-region: ${{ env.AWS_REGION }}
-#          audience: sts.amazonaws.com
-#      - uses: docker/setup-buildx-action@v3
-#      - uses: aws-actions/amazon-ecr-login@v2
-#        id: login-ecr
-#      - name: Build/Push [app] image
-#        run: |
-#          docker build -t $ECR_REPO/sedaro-app:$IMAGE_TAG ./sedaro-nano/app
-#          docker push $ECR_REPO/sedaro-app:$IMAGE_TAG
+  build-web:
+    runs-on: ubuntu-latest
+    permissions: { id-token: write, contents: read }
+    steps:
+      - uses: actions/checkout@v3
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+          audience: sts.amazonaws.com
+      - uses: docker/setup-buildx-action@v3
+      - uses: aws-actions/amazon-ecr-login@v2
+        id: login-ecr
+      - name: Build/Push [web] image
+        run: |
+          docker build -t $ECR_REPO/sedaro-web:$IMAGE_TAG ./sedaro-nano/web
+          docker push $ECR_REPO/sedaro-web:$IMAGE_TAG
+
+  build-app:
+    runs-on: ubuntu-latest
+    permissions: { id-token: write, contents: read }
+    steps:
+      - uses: actions/checkout@v3
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+          audience: sts.amazonaws.com
+      - uses: docker/setup-buildx-action@v3
+      - uses: aws-actions/amazon-ecr-login@v2
+        id: login-ecr
+      - name: Build/Push [app] image
+        run: |
+          docker build -t $ECR_REPO/sedaro-app:$IMAGE_TAG ./sedaro-nano/app
+          docker push $ECR_REPO/sedaro-app:$IMAGE_TAG
 
 ########################################################
 #   
@@ -71,9 +71,9 @@ jobs:
 #                    
 ########################################################
   deploy:
-    #needs:
-    #  - build-web
-    #  - build-app
+    needs:
+      - build-web
+      - build-app
     runs-on: [self-hosted, SEDARO]
     steps:
       - uses: actions/checkout@v3
