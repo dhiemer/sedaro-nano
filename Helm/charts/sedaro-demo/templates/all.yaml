@@ -4,13 +4,13 @@ kind: Service
 metadata:
   name: sedaro-nano-app
 spec:
+  type: NodePort
   selector:
     app: app
   ports:
-    - name: http
-      protocol: TCP
-      port: 8000
+    - port: 8000
       targetPort: 8000
+      nodePort: 30081
 
 ---
 apiVersion: apps/v1
@@ -61,13 +61,11 @@ kind: Service
 metadata:
   name: sedaro-nano-web
 spec:
+  type: NodePort
   selector:
     app: web
-  type: NodePort
   ports:
-    - name: http
-      protocol: TCP
-      port: 3030
+    - port: 3030
       targetPort: 3030
       nodePort: 30080
 
@@ -114,34 +112,35 @@ spec:
             periodSeconds: 10
             failureThreshold: 3
 
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: sedaro-nano-ingress
-  annotations:
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:032021926264:certificate/61734d9b-fb9f-4b91-b120-58c475678c4a
-    alb.ingress.kubernetes.io/load-balancer-name: sedaro-nano-alb
-    alb.ingress.kubernetes.io/ssl-redirect: "443"
-spec:
-  ingressClassName: alb
-  rules:
-    - host: sedaro-nano.daveops.pro
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: sedaro-nano-web
-                port:
-                  number: 3030
-          - path: /api
-            pathType: Prefix
-            backend:
-              service:
-                name: sedaro-nano-app
-                port:
-                  number: 8000
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: sedaro-nano-ingress
+#   annotations:
+#     alb.ingress.kubernetes.io/scheme: internet-facing
+#     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
+#     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:032021926264:certificate/61734d9b-fb9f-4b91-b120-58c475678c4a
+#     alb.ingress.kubernetes.io/load-balancer-name: sedaro-nano-alb
+#     alb.ingress.kubernetes.io/ssl-redirect: "443"
+# spec:
+#   ingressClassName: alb
+#   rules:
+#     - host: sedaro-nano.daveops.pro
+#       http:
+#         paths:
+#           - path: /
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: sedaro-nano-web
+#                 port:
+#                   number: 3030
+#           - path: /api
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: sedaro-nano-app
+#                 port:
+#                   number: 8000
+# 
