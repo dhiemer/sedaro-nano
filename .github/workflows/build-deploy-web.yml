@@ -85,9 +85,13 @@ jobs:
           cd Helm/charts/sedaro-demo
           helm dependency build
 
-      - name: Install kube-prometheus CRDs
+      - name: Install kube-prometheus-stack CRDs
         run: |
-          curl -s https://raw.githubusercontent.com/prometheus-operator/kube-prometheus/main/manifests/setup/prometheus-operator-crd.yaml | kubectl apply -f -
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          helm repo update
+          mkdir -p .crds-temp
+          helm pull prometheus-community/kube-prometheus-stack --untar --untardir .crds-temp
+          kubectl apply --server-side -f .crds-temp/kube-prometheus-stack/crds/
 
       - name: Deploy Helm chart
         run: |
