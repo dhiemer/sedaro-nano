@@ -93,10 +93,11 @@ jobs:
         run: |
           mkdir -p crds-stripped
           for crd in alertmanagers podmonitors probes prometheuses prometheusrules servicemonitors thanosrulers; do
-            curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_${crd}.yaml -o crds-stripped/${crd}.yaml
-            yq e 'del(.metadata.annotations)' crds-stripped/${crd}.yaml -i
+            curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_${crd}.yaml \
+              | sed '/metadata:/,/^[^ ]/ {/annotations:/,/^[^ ]/d}' > crds-stripped/${crd}.yaml
             kubectl apply -f crds-stripped/${crd}.yaml
           done
+
 
       - name: Deploy Helm chart
         run: |
