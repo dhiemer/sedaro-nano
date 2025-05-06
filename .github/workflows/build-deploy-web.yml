@@ -83,9 +83,7 @@ jobs:
       - name: Prep
         run: |
           echo "KUBECONFIG=/etc/rancher/k3s/k3s.yaml" >> $GITHUB_ENV
-          sudo yum install -y epel-release
-          sudo yum install -y yq
-
+          
       - name: Pull Helm dependencies
         run: |
           cd Helm/charts/sedaro-demo

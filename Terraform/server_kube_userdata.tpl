@@ -10,7 +10,10 @@ INSTALL_DIR="/home/$RUNNER_USER/actions-runner"
 
 # === SYSTEM PREP ===
 sudo yum update -y
-sudo yum install -y tar dotnet-runtime-6.0 lttng-ust openssl-libs krb5-libs zlib
+sudo yum install -y tar dotnet-runtime-6.0 lttng-ust openssl-libs krb5-libs zlib 
+curl -L https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -o /usr/local/bin/yq
+chmod +x /usr/local/bin/yq
+yq --version
 
 # === FIX LOCALE ENVIRONMENT ===
 echo "export LANG=en_US.UTF-8" | sudo tee -a /etc/profile.d/locale.sh
