@@ -91,13 +91,13 @@ jobs:
 
       - name: Install kube-prometheus-stack CRDs
         run: |
-          curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagers.yaml | kubectl apply -f -
-          curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml | kubectl apply -f -
-          curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_probes.yaml | kubectl apply -f -
+          curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagers.yaml | yq 'del(.metadata.annotations)' | kubectl apply -f -
+          curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml | yq 'del(.metadata.annotations)' | kubectl apply -f -
+          curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_probes.yaml | yq 'del(.metadata.annotations)' | kubectl apply -f -
           curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheuses.yaml | yq 'del(.metadata.annotations)' | kubectl apply -f -
-          curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml | kubectl apply -f -
-          curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml | kubectl apply -f -
-          curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_thanosrulers.yaml | kubectl apply -f -
+          curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml | yq 'del(.metadata.annotations)' | kubectl apply -f -
+          curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml | yq 'del(.metadata.annotations)' | kubectl apply -f -
+          curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_thanosrulers.yaml | yq 'del(.metadata.annotations)' | kubectl apply -f -
 
       - name: Deploy Helm chart
         run: |
