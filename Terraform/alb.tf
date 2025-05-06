@@ -109,6 +109,33 @@ resource "aws_lb_target_group" "sedaro_nano_app" {
   }
 }
 
+###############################################
+# Target Group for Grafana (NodePort 30082)
+###############################################
+resource "aws_lb_target_group" "sedaro_nano_grafana" {
+  name        = "sedaro-nano-grafana"
+  port        = 30082
+  protocol    = "HTTP"
+  vpc_id      = aws_vpc.main.id
+  target_type = "instance"
+
+  health_check {
+    path                = "/login"
+    port                = "30082"
+    protocol            = "HTTP"
+    matcher             = "200"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 3
+  }
+
+  tags = {
+    Name = "sedaro-nano-grafana"
+  }
+}
+
+
 #####################################
 # HTTP Listener (Redirect to HTTPS)
 #####################################
@@ -181,7 +208,30 @@ resource "aws_lb_listener_rule" "web" {
   }
 }
 
+############################################
+# Listener Rule: / → Grafana (port 30082)
+############################################
+resource "aws_lb_listener_rule" "grafana" {
+  listener_arn = aws_lb_listener.https.arn
+  priority     = 150
 
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.sedaro_nano_grafana.arn
+  }
+
+  condition {
+    path_pattern {
+      values = ["/grafana/*"]
+    }
+  }
+
+  condition {
+    host_header {
+      values = ["sedaro-nano.daveops.pro"]
+    }
+  }
+}
 
 
 ##################################
@@ -202,3 +252,8 @@ resource "aws_lb_target_group_attachment" "web_node" {
 }
 
 
+resource "aws_lb_target_group_attachment" "grafana_node" {
+  target_group_arn = aws_lb_target_group.sedaro_nano_grafana.arn
+  target_id        = aws_instance.k3s_server.id
+  port             = 30082
+}

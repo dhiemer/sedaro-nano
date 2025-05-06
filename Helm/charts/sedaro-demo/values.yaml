@@ -58,8 +58,32 @@ app:
     periodSeconds: 10
     failureThreshold: 3
 
-ingress:
-  enabled: true
-  host: sedaro-nano.daveops.pro
-  certificateArn: arn:aws:acm:us-east-1:032021926264:certificate/61734d9b-fb9f-4b91-b120-58c475678c4a
-  albName: sedaro-nano-alb
+
+
+
+
+      
+kube-prometheus-stack:
+  grafana:
+    enabled: true
+    service:
+      type: NodePort
+      nodePort: 30082
+
+
+
+  prometheus:
+    prometheusSpec:
+      serviceMonitorSelectorNilUsesHelmValues: false
+
+  alertmanager:
+    enabled: false
+
+  defaultRules:
+    create: true
+
+  kube-state-metrics:
+    enabled: true
+
+  nodeExporter:
+    enabled: true
