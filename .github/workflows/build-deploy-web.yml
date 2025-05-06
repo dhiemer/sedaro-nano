@@ -79,7 +79,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: azure/setup-helm@v3
       - uses: azure/setup-kubectl@v3
-      
+
       - name: Pull Helm dependencies
         run: |
           cd Helm/charts/sedaro-demo
@@ -87,10 +87,7 @@ jobs:
 
       - name: Install kube-prometheus CRDs
         run: |
-          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-          helm repo update
-          helm pull prometheus-community/kube-prometheus-stack --untar --untardir .
-          kubectl apply --server-side -f kube-prometheus-stack/crds/
+          curl -s https://raw.githubusercontent.com/prometheus-operator/kube-prometheus/main/manifests/setup/prometheus-operator-crd.yaml | kubectl apply -f -
 
       - name: Deploy Helm chart
         run: |
@@ -101,4 +98,3 @@ jobs:
             --set web.tag=$IMAGE_TAG \
             --set app.tag=$IMAGE_TAG \
             --timeout 3m
-
