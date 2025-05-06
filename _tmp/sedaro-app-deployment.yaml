@@ -1,0 +1,36 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sedaro-demo-app
+spec:
+  replicas: {{ .Values.app.replicas }}
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+      annotations:
+        rollme: "{{ now | unixEpoch }}"
+    spec:
+      containers:
+        - name: app
+          image: "{{ .Values.ecr_repository }}/{{ .Values.app.name }}:{{ .Values.app.tag }}"
+          imagePullPolicy: {{ .Values.app.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.app.port }}
+          resources: {{ toYaml .Values.app.resources | nindent 12 }}
+          livenessProbe: {{ toYaml .Values.app.livenessProbe | nindent 12 }}
+          readinessProbe: {{ toYaml .Values.app.readinessProbe | nindent 12 }}
+          {{- if .Values.app.enableDataVolume }}
+          volumeMounts:
+            - name: shared-data
+              mountPath: /data
+          {{- end }}
+      {{- if .Values.app.enableDataVolume }}
+      volumes:
+        - name: shared-data
+          emptyDir: {}
+      {{- end }}

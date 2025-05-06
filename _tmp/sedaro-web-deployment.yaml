@@ -1,0 +1,26 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sedaro-demo-web
+spec:
+  replicas: {{ .Values.web.replicas }}
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+      annotations:
+        rollme: "{{ now | unixEpoch }}"
+    spec:
+      containers:
+        - name: web
+          image: "{{ .Values.ecr_repository }}/{{ .Values.web.name }}:{{ .Values.web.tag }}"
+          imagePullPolicy: {{ .Values.web.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.web.port }}
+          resources: {{ toYaml .Values.web.resources | nindent 12 }}
+          livenessProbe: {{ toYaml .Values.web.livenessProbe | nindent 12 }}
+          readinessProbe: {{ toYaml .Values.web.readinessProbe | nindent 12 }}

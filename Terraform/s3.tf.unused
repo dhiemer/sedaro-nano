@@ -1,0 +1,50 @@
+# S3 Bucket
+resource "aws_s3_bucket" "daveops_bucket" {
+  bucket   = "daveops-sedaro-test"
+  provider = aws
+}
+
+
+resource "aws_s3_bucket_ownership_controls" "daveops_bucket" {
+  bucket = aws_s3_bucket.daveops_bucket.id
+  rule {
+    object_ownership = "ObjectWriter"
+  }
+}
+
+
+resource "aws_s3_bucket_acl" "private" {
+  bucket     = aws_s3_bucket.daveops_bucket.id
+  acl        = "private"
+  depends_on = [aws_s3_bucket_ownership_controls.daveops_bucket]
+}
+
+
+resource "aws_s3_bucket_public_access_block" "daveops_bucket" {
+  bucket                  = aws_s3_bucket.daveops_bucket.bucket
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+
+#resource "aws_s3_bucket_lifecycle_configuration" "daveops_bucket" {
+#  bucket = aws_s3_bucket.daveops_bucket.id
+#  rule {
+#    id     = "build-intelligent-tiering"
+#    status = "Enabled"
+#
+#    transition {
+#      storage_class = "INTELLIGENT_TIERING"
+#      days          = 30
+#
+#    }
+#
+#    abort_incomplete_multipart_upload {
+#      days_after_initiation = 2
+#    }
+#
+#  }
+#}
+#

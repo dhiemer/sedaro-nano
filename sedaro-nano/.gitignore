@@ -1,0 +1,8 @@
+**/node_modules
+**/data.json
+**/.DS_Store
+**/.venv
+**/__pycache__
+**/.vscode
+**/instance
+**/database.db

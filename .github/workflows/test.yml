@@ -1,0 +1,9 @@
+name: runner-test
+on: [workflow_dispatch]
+
+jobs:
+  test:
+    runs-on: [self-hosted, SEDARO]
+    steps:
+      - name: Say hello
+        run: echo "Runner is working!"

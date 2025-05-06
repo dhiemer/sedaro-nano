@@ -1,0 +1,92 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+# Shared environment values
+env:
+  AWS_REGION: us-east-1
+  ROLE_TO_ASSUME: arn:aws:iam::032021926264:role/sedaro_github_actions
+  ECR_REPO: 032021926264.dkr.ecr.us-east-1.amazonaws.com
+  IMAGE_TAG: ${{ github.sha }}
+
+jobs:
+########################################################
+#   
+#   ██████╗ ██╗   ██╗██╗██╗     ██████╗ 
+#   ██╔══██╗██║   ██║██║██║     ██╔══██╗
+#   ██████╔╝██║   ██║██║██║     ██║  ██║
+#   ██╔══██╗██║   ██║██║██║     ██║  ██║
+#   ██████╔╝╚██████╔╝██║███████╗██████╔╝
+#   ╚═════╝  ╚═════╝ ╚═╝╚══════╝╚═════╝ 
+# 
+########################################################
+
+  build-web:
+    runs-on: ubuntu-latest
+    permissions: { id-token: write, contents: read }
+    steps:
+      - uses: actions/checkout@v3
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+          audience: sts.amazonaws.com
+      - uses: docker/setup-buildx-action@v3
+      - uses: aws-actions/amazon-ecr-login@v2
+        id: login-ecr
+      - name: Build/Push [web] image
+        run: |
+          docker build -t $ECR_REPO/sedaro-web:$IMAGE_TAG ./sedaro-nano/web
+          docker push $ECR_REPO/sedaro-web:$IMAGE_TAG
+
+  build-app:
+    runs-on: ubuntu-latest
+    permissions: { id-token: write, contents: read }
+    steps:
+      - uses: actions/checkout@v3
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+          audience: sts.amazonaws.com
+      - uses: docker/setup-buildx-action@v3
+      - uses: aws-actions/amazon-ecr-login@v2
+        id: login-ecr
+      - name: Build/Push [app] image
+        run: |
+          docker build -t $ECR_REPO/sedaro-app:$IMAGE_TAG ./sedaro-nano/app
+          docker push $ECR_REPO/sedaro-app:$IMAGE_TAG
+
+########################################################
+#   
+#   ██████╗ ███████╗██████╗ ██╗      ██████╗ ██╗   ██╗
+#   ██╔══██╗██╔════╝██╔══██╗██║     ██╔═══██╗╚██╗ ██╔╝
+#   ██║  ██║█████╗  ██████╔╝██║     ██║   ██║ ╚████╔╝ 
+#   ██║  ██║██╔══╝  ██╔═══╝ ██║     ██║   ██║  ╚██╔╝  
+#   ██████╔╝███████╗██║     ███████╗╚██████╔╝   ██║   
+#   ╚═════╝ ╚══════╝╚═╝     ╚══════╝ ╚═════╝    ╚═╝   
+#                    
+########################################################
+  deploy:
+    needs:
+      - build-web
+      - build-app
+    runs-on: [self-hosted, SEDARO]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: azure/setup-helm@v3
+      - uses: azure/setup-kubectl@v3
+
+      - name: Deploy Helm chart
+        run: |
+          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+          helm upgrade --install sedaro-nano ./Helm/charts/sedaro-nano \
+            --namespace default \
+            --set ecr_repository=$ECR_REPO \
+            --set web.tag=$IMAGE_TAG \
+            --set app.tag=$IMAGE_TAG \
+            --timeout 3m
+
