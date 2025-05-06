@@ -3,7 +3,7 @@ locals {
     sedaro-nano = {
       url      = "sedaro-nano.daveops.pro"
       Priority = 200
-      Port     = 30080
+      Port     = 3030
     }
   }
 }

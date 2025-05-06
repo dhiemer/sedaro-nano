@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: 032021926264.dkr.ecr.us-east-1.amazonaws.com/sedaro-app:latest
+          image: "{{ .Values.ecr_repository }}/sedaro-app:{{ .Values.app.tag }}"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
@@ -88,7 +88,7 @@ spec:
     spec:
       containers:
         - name: web
-          image: 032021926264.dkr.ecr.us-east-1.amazonaws.com/sedaro-web:latest
+          image: "{{ .Values.ecr_repository }}/sedaro-web:{{ .Values.web.tag }}"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3030
