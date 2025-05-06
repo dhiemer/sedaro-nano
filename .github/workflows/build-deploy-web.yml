@@ -89,7 +89,7 @@ jobs:
         run: |
           helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
           helm repo update
-          helm pull prometheus-community/kube-prometheus-stack --untar
+          helm pull prometheus-community/kube-prometheus-stack --untar --untardir .
           kubectl apply --server-side -f kube-prometheus-stack/crds/
 
       - name: Deploy Helm chart
