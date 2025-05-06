@@ -180,3 +180,25 @@ resource "aws_lb_listener_rule" "web" {
     }
   }
 }
+
+
+
+
+##################################
+# Target Group Attachments
+
+resource "aws_lb_target_group_attachment" "app_node" {
+  target_group_arn = aws_lb_target_group.sedaro_nano_app.arn
+  target_id        = aws_instance.k3s_server.id  
+  port             = 30081
+}
+
+
+
+resource "aws_lb_target_group_attachment" "web_node" {
+  target_group_arn = aws_lb_target_group.sedaro_nano_web.arn
+  target_id        = aws_instance.k3s_server.id  
+  port             = 30080
+}
+
+
