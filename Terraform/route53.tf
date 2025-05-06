@@ -3,10 +3,10 @@ data "aws_route53_zone" "main" {
   name = "daveops.pro"
 }
 
-# Add DNS A record for sedaro-demo.daveops.pro
-resource "aws_route53_record" "sedaro-demo" {
+# Add DNS A record for sedaro-nano.daveops.pro
+resource "aws_route53_record" "sedaro-nano" {
   zone_id = data.aws_route53_zone.main.zone_id
-  name    = "sedaro-demo.daveops.pro"
+  name    = "sedaro-nano.daveops.pro"
   type    = "A"
 
   alias {

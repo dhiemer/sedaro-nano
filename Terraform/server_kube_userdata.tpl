@@ -4,7 +4,7 @@
 GITHUB_TOKEN="${registration_token}"
 
 # === CONFIGURATION ===
-GITHUB_URL="https://github.com/dhiemer/sedaro-demo"
+GITHUB_URL="https://github.com/dhiemer/sedaro-nano"
 RUNNER_USER="actions"
 INSTALL_DIR="/home/$RUNNER_USER/actions-runner"
 

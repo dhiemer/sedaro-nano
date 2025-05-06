@@ -1,7 +1,7 @@
 locals {
   sites = {
-    sedaro-demo = {
-      url      = "sedaro-demo.daveops.pro"
+    sedaro-nano = {
+      url      = "sedaro-nano.daveops.pro"
       Priority = 200
       Port     = 30080
     }

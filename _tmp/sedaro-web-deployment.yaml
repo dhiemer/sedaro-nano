@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sedaro-demo-web
+  name: sedaro-nano-web
 spec:
   replicas: {{ .Values.web.replicas }}
   selector:

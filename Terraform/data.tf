@@ -3,7 +3,7 @@ data "aws_caller_identity" "current" {}
 
 # Get Github Runner Registration Token
 data "github_actions_registration_token" "runner" {
-  repository = "sedaro-demo"
+  repository = "sedaro-nano"
 }
 
 

@@ -60,6 +60,6 @@ app:
 
 ingress:
   enabled: true
-  host: sedaro-demo.daveops.pro
+  host: sedaro-nano.daveops.pro
   certificateArn: arn:aws:acm:us-east-1:032021926264:certificate/61734d9b-fb9f-4b91-b120-58c475678c4a
-  albName: sedaro-demo-alb
+  albName: sedaro-nano-alb

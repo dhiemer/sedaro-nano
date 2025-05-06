@@ -83,7 +83,7 @@ jobs:
       - name: Deploy Helm chart
         run: |
           export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-          helm upgrade --install sedaro-nano ./Helm/charts/sedaro-nano \
+          helm upgrade --install sedaro-demo ./Helm/charts/sedaro-demo \
             --namespace default \
             --set ecr_repository=$ECR_REPO \
             --set web.tag=$IMAGE_TAG \
