@@ -80,23 +80,6 @@ jobs:
       - uses: azure/setup-helm@v3
       - uses: azure/setup-kubectl@v3
 
-      - name: Pull Helm dependencies
-        run: |
-          cd Helm/charts/sedaro-demo
-          helm dependency build
-
-
-      - name: Deploy kube-prometheus-stack with CRDs
-        run: |
-          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-          helm repo update
-          helm upgrade --install kube-prometheus prometheus-community/kube-prometheus-stack \
-            --namespace default \
-            --create-namespace \
-            --set crds.enabled=true \
-            --wait --timeout 5m
-            
       - name: Deploy Helm chart
         run: |
           export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
@@ -106,3 +89,4 @@ jobs:
             --set web.tag=$IMAGE_TAG \
             --set app.tag=$IMAGE_TAG \
             --timeout 3m
+

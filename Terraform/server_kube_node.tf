@@ -79,6 +79,12 @@ resource "aws_instance" "k3s_server" {
     registration_token = data.github_actions_registration_token.runner.token
   })
 
+  root_block_device {
+    volume_size = 20
+    volume_type = "gp3"
+    delete_on_termination = true
+  }
+
   lifecycle {
     ignore_changes = [user_data]
   }
