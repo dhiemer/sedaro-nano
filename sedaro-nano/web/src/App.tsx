@@ -28,7 +28,8 @@ const App = () => {
 
       try {
         // data should be populated from a POST call to the simulation server
-        const response = await fetch('http://sedaro-nano-app:8000/simulation');
+        //const response = await fetch('http://sedaro-nano-app:8000/simulation');
+        const response = await fetch('https://sedaro-nano.daveops.pro/api/simulation');
         if (canceled) return;
         const data: DataPoint[] = await response.json();
         const updatedPositionData: PlottedFrame = {};

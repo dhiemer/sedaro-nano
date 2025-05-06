@@ -18,8 +18,10 @@ class Base(DeclarativeBase):
 ############################## Application Configuration ##############################
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:3030"])
-
+CORS(app, origins=[
+    "http://localhost:3030",                # Keep for local dev
+    "https://sedaro-nano.daveops.pro"       # Allow production site
+])
 db = SQLAlchemy(model_class=Base)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 db.init_app(app)
