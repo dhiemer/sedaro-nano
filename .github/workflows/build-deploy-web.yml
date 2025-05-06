@@ -80,10 +80,10 @@ jobs:
       - uses: azure/setup-helm@v3
       - uses: azure/setup-kubectl@v3
 
-      - name: Pull Helm dependencies
-        run: |
-          cd Helm/charts/sedaro-demo
-          helm dependency update
+      #- name: Pull Helm dependencies
+      #  run: |
+      #    cd Helm/charts/sedaro-demo
+      #    helm dependency update
 
       - name: Deploy Helm chart
         run: |
