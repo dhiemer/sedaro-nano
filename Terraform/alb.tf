@@ -110,18 +110,18 @@ resource "aws_lb_target_group" "sedaro_nano_app" {
 }
 
 ###############################################
-# Target Group for Grafana (NodePort 30082)
+# Target Group for Grafana (NodePort 30000)
 ###############################################
 resource "aws_lb_target_group" "sedaro_nano_grafana" {
   name        = "sedaro-nano-grafana"
-  port        = 30082
+  port        = 30000
   protocol    = "HTTP"
   vpc_id      = aws_vpc.main.id
   target_type = "instance"
 
   health_check {
     path                = "/login"
-    port                = "30082"
+    port                = "30000"
     protocol            = "HTTP"
     matcher             = "200"
     interval            = 30
@@ -209,7 +209,7 @@ resource "aws_lb_listener_rule" "web" {
 }
 
 ############################################
-# Listener Rule: / → Grafana (port 30082)
+# Listener Rule: / → Grafana (port 30000)
 ############################################
 resource "aws_lb_listener_rule" "grafana" {
   listener_arn = aws_lb_listener.https.arn
@@ -255,5 +255,5 @@ resource "aws_lb_target_group_attachment" "web_node" {
 resource "aws_lb_target_group_attachment" "grafana_node" {
   target_group_arn = aws_lb_target_group.sedaro_nano_grafana.arn
   target_id        = aws_instance.k3s_server.id
-  port             = 30082
+  port             = 30000
 }

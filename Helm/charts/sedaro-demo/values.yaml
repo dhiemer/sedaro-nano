@@ -59,6 +59,7 @@ app:
     failureThreshold: 3
 
 
+grafana:
 
 
 
@@ -69,6 +70,10 @@ prometheus:
 
 grafana:
   adminPassword: admin
+  grafana.ini:
+    server:
+      root_url: "%(protocol)s://%(domain)s/grafana"
+      serve_from_sub_path: true
   service:
     type: NodePort
     nodePort: 30000
