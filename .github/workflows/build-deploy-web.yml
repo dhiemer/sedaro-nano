@@ -87,6 +87,7 @@ jobs:
 
       - name: Install kube-prometheus-stack CRDs
         run: |
+          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
           curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagers.yaml | kubectl apply -f -
           curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml | kubectl apply -f -
           curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_probes.yaml | kubectl apply -f -
