@@ -80,6 +80,12 @@ jobs:
       - uses: azure/setup-helm@v3
       - uses: azure/setup-kubectl@v3
 
+      - name: Prep
+        run: |
+          echo "KUBECONFIG=/etc/rancher/k3s/k3s.yaml" >> $GITHUB_ENV
+          sudo yum install -y epel-release
+          sudo yum install -y yq
+
       - name: Pull Helm dependencies
         run: |
           cd Helm/charts/sedaro-demo
@@ -87,18 +93,16 @@ jobs:
 
       - name: Install kube-prometheus-stack CRDs
         run: |
-          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
           curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagers.yaml | kubectl apply -f -
           curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml | kubectl apply -f -
           curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_probes.yaml | kubectl apply -f -
-          curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheuses.yaml | kubectl apply -f -
+          curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheuses.yaml | yq 'del(.metadata.annotations)' | kubectl apply -f -
           curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml | kubectl apply -f -
           curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml | kubectl apply -f -
           curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_thanosrulers.yaml | kubectl apply -f -
 
       - name: Deploy Helm chart
         run: |
-          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
           helm upgrade --install sedaro-demo ./Helm/charts/sedaro-demo \
             --namespace default \
             --set ecr_repository=$ECR_REPO \
