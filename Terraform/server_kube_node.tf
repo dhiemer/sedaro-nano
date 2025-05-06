@@ -38,7 +38,7 @@ resource "aws_security_group" "kube_sg" {
   ingress {
     description = "30080"
     from_port   = 30080
-    to_port     = 30080
+    to_port     = 30082
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
