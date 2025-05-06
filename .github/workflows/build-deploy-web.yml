@@ -80,27 +80,26 @@ jobs:
       - uses: azure/setup-helm@v3
       - uses: azure/setup-kubectl@v3
 
-      - name: Prep
-        run: |
-          echo "KUBECONFIG=/etc/rancher/k3s/k3s.yaml" >> $GITHUB_ENV
-          
       - name: Pull Helm dependencies
         run: |
           cd Helm/charts/sedaro-demo
           helm dependency build
 
-      - name: Install kube-prometheus-stack CRDs
+
+      - name: Deploy kube-prometheus-stack with CRDs
         run: |
-          mkdir -p crds-stripped
-          for crd in alertmanagers podmonitors probes prometheuses prometheusrules servicemonitors thanosrulers; do
-            curl -sL https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_${crd}.yaml \
-              | sed '/metadata:/,/^[^ ]/ {/annotations:/,/^[^ ]/d}' > crds-stripped/${crd}.yaml
-            kubectl apply -f crds-stripped/${crd}.yaml
-          done
-
-
+          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          helm repo update
+          helm upgrade --install kube-prometheus prometheus-community/kube-prometheus-stack \
+            --namespace default \
+            --create-namespace \
+            --set crds.enabled=true \
+            --wait --timeout 5m
+            
       - name: Deploy Helm chart
         run: |
+          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
           helm upgrade --install sedaro-demo ./Helm/charts/sedaro-demo \
             --namespace default \
             --set ecr_repository=$ECR_REPO \
