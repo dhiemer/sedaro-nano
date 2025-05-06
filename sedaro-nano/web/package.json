@@ -22,7 +22,7 @@
     "vite-tsconfig-paths": "^5.0.1"
   },
   "scripts": {
-    "start": "vite",
+    "start": "vite --host",
     "build": "tsc && vite build",
     "serve": "vite preview"
   },
